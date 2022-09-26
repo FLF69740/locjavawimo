@@ -1,38 +1,39 @@
 package com.flf69740.testwimova.ui;
 
+import android.annotation.SuppressLint;
+import android.location.Location;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
-
 import com.flf69740.testwimova.R;
 import com.flf69740.testwimova.modele.MapPositions;
 import com.flf69740.testwimova.rx.Response;
 import com.flf69740.testwimova.viewmodel.MainViewModel;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import javax.annotation.Nullable;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class MainFragment extends Fragment implements View.OnClickListener, OnMapReadyCallback {
+public class MainFragment extends Fragment implements
+        View.OnClickListener,
+        OnMapReadyCallback,
+        GoogleMap.OnMyLocationClickListener,
+        ActivityCompat.OnRequestPermissionsResultCallback,
+        GoogleMap.OnMyLocationButtonClickListener
+{
 
     public MainFragment() {}
-
     private MainViewModel mainViewModel;
 
     private GoogleMap mMap;
@@ -68,17 +69,14 @@ public class MainFragment extends Fragment implements View.OnClickListener, OnMa
         mainViewModel.runMapPositions(getContext());
     }
 
-
     private void processResponse(Response response) {
         switch (response.status) {
             case LOADING:
                 renderLoadingState();
                 break;
-
             case SUCCESS:
                 renderDataState(response.data);
                 break;
-
             case ERROR:
                 renderErrorState(response.error);
                 break;
@@ -103,15 +101,22 @@ public class MainFragment extends Fragment implements View.OnClickListener, OnMa
      * GOOGLE MAP
      */
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMyLocationClickListener(this);
+        mMap.setMyLocationEnabled(true);
+        mMap.setOnMyLocationButtonClickListener(this);
+    }
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions()
-                .position(sydney)
-                .title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    @Override
+    public boolean onMyLocationButtonClick() {
+        return false;
+    }
+
+    @Override
+    public void onMyLocationClick(@NonNull Location location) {
+        Toast.makeText(getContext(), "Current location:\n" + location, Toast.LENGTH_LONG).show();
     }
 }
