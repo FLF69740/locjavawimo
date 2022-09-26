@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TestWimova.iml" filepath="$PROJECT_DIR$/.idea/modules/TestWimova.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/TestWimova.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/TestWimova.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/TestWimova.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/TestWimova.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/TestWimova.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/TestWimova.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/TestWimova.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/TestWimova.app.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/TestWimova.core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/TestWimova.core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/TestWimova.core.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/core/TestWimova.core.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/TestWimova.core.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/TestWimova.core.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/TestWimova.core.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/core/TestWimova.core.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/datas/TestWimova.datas.iml" filepath="$PROJECT_DIR$/.idea/modules/datas/TestWimova.datas.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/datas/TestWimova.datas.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/datas/TestWimova.datas.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/datas/TestWimova.datas.main.iml" filepath="$PROJECT_DIR$/.idea/modules/datas/TestWimova.datas.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/datas/TestWimova.datas.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/datas/TestWimova.datas.unitTest.iml" />
+    </modules>
+  </component>
+</project>
