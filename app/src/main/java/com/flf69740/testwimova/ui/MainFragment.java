@@ -11,14 +11,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.flf69740.testwimova.R;
 import com.flf69740.testwimova.modele.MapPositions;
 import com.flf69740.testwimova.rx.Response;
 import com.flf69740.testwimova.viewmodel.MainViewModel;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 
 import javax.annotation.Nullable;
 
@@ -38,6 +41,8 @@ public class MainFragment extends Fragment implements
 
     private GoogleMap mMap;
 
+    private TextView counterPanel;
+
     public static MainFragment newInstance() {
         return new MainFragment();
     }
@@ -52,9 +57,15 @@ public class MainFragment extends Fragment implements
 
         mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
         mainViewModel.response().observe(getViewLifecycleOwner(), this::processResponse);
+        mainViewModel.counter().observe(getViewLifecycleOwner(), this::showCounter);
 
         Button myBtn = view.findViewById(R.id.button_temp);
         myBtn.setOnClickListener(this);
+
+        Button stop = view.findViewById(R.id.button_stop);
+        stop.setOnClickListener(this);
+
+        counterPanel = view.findViewById(R.id.counter_indicator);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null){
@@ -66,7 +77,12 @@ public class MainFragment extends Fragment implements
 
     @Override
     public void onClick(View v) {
-        mainViewModel.runMapPositions(getContext());
+        if (v.getId() == R.id.button_temp) mainViewModel.runCounter(getContext());
+        else if (v.getId() == R.id.button_stop) mainViewModel.stopCounter();
+    }
+
+    private void showCounter(String number){
+        counterPanel.setText(number);
     }
 
     private void processResponse(Response response) {
@@ -84,7 +100,6 @@ public class MainFragment extends Fragment implements
     }
 
     private void renderLoadingState() {
-        Toast.makeText(getContext(), "LOADING", Toast.LENGTH_SHORT).show();
     }
 
     private void renderDataState(@Nullable MapPositions response){
