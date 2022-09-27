@@ -18,11 +18,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.flf69740.testwimova.R;
 import com.flf69740.testwimova.modele.MapPositions;
+import com.flf69740.testwimova.rx.ListResponse;
 import com.flf69740.testwimova.rx.Response;
+import com.flf69740.testwimova.utils.DateUtils;
 import com.flf69740.testwimova.viewmodel.MainViewModel;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -59,6 +63,7 @@ public class MainFragment extends Fragment implements
 
         mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
         mainViewModel.response().observe(getViewLifecycleOwner(), this::processResponse);
+        mainViewModel.listResponse().observe(getViewLifecycleOwner(), this::processListResponse);
         mainViewModel.counter().observe(getViewLifecycleOwner(), this::showCounter);
 
         progressBar = view.findViewById(R.id.progress_indicator);
@@ -80,9 +85,15 @@ public class MainFragment extends Fragment implements
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mainViewModel.runDatabasePositionLoading();
+    }
+
+    @Override
     public void onClick(View v) {
         if (v.getId() == R.id.button_start) {
-            mainViewModel.runCounter(getContext());
+            mainViewModel.runCounter(getContext(), new DateUtils().getDateToString());
             changeButtonsState(Pair.create(View.GONE, View.VISIBLE));
         }
         else if (v.getId() == R.id.button_stop) {
@@ -102,6 +113,8 @@ public class MainFragment extends Fragment implements
     private void showCounter(String number){
         counterPanel.setText(number);
     }
+
+    // GPS TRACKING
 
     private void processResponse(Response response) {
         switch (response.status) {
@@ -130,13 +143,42 @@ public class MainFragment extends Fragment implements
         Toast.makeText(getContext(), "ERROR", Toast.LENGTH_SHORT).show();
     }
 
+    // LIST OF SAVED POSITIONS
+
+    private void processListResponse(ListResponse response) {
+        switch (response.status) {
+            case LOADING:
+                renderDatabaseLoadingState();
+                break;
+            case SUCCESS:
+                renderRoomDataState(response.data);
+                break;
+            case ERROR:
+                renderDatabaseErrorState(response.error);
+                break;
+        }
+    }
+
+    private void renderDatabaseErrorState(Throwable error) {
+    }
+
+    private void renderRoomDataState(@Nullable List<MapPositions> listResponse) {
+        if (listResponse != null && !listResponse.isEmpty()) {
+            Toast.makeText(getContext(), "ligne " + listResponse.size() + " \n" +
+                    listResponse.get(0).getDate() + " - " + listResponse.get(0).getLatitude() + "-" + listResponse.get(0).getLongitude(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void renderDatabaseLoadingState() {
+    }
+
     /*
      * GOOGLE MAP
      */
 
     @SuppressLint("MissingPermission")
     @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
+    public void onMapReady(GoogleMap googleMap) {
         googleMap.setOnMyLocationClickListener(this);
         googleMap.setMyLocationEnabled(true);
         googleMap.setOnMyLocationButtonClickListener(this);
