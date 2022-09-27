@@ -7,21 +7,22 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.flf69740.testwimova.R;
 import com.flf69740.testwimova.modele.MapPositions;
 import com.flf69740.testwimova.rx.Response;
 import com.flf69740.testwimova.viewmodel.MainViewModel;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
 
 import javax.annotation.Nullable;
 
@@ -39,9 +40,10 @@ public class MainFragment extends Fragment implements
     public MainFragment() {}
     private MainViewModel mainViewModel;
 
-    private GoogleMap mMap;
-
     private TextView counterPanel;
+    private ProgressBar progressBar;
+    private Button start;
+    private Button stop;
 
     public static MainFragment newInstance() {
         return new MainFragment();
@@ -59,10 +61,12 @@ public class MainFragment extends Fragment implements
         mainViewModel.response().observe(getViewLifecycleOwner(), this::processResponse);
         mainViewModel.counter().observe(getViewLifecycleOwner(), this::showCounter);
 
-        Button myBtn = view.findViewById(R.id.button_temp);
-        myBtn.setOnClickListener(this);
+        progressBar = view.findViewById(R.id.progress_indicator);
 
-        Button stop = view.findViewById(R.id.button_stop);
+        start = view.findViewById(R.id.button_start);
+        start.setOnClickListener(this);
+
+        stop = view.findViewById(R.id.button_stop);
         stop.setOnClickListener(this);
 
         counterPanel = view.findViewById(R.id.counter_indicator);
@@ -77,8 +81,22 @@ public class MainFragment extends Fragment implements
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.button_temp) mainViewModel.runCounter(getContext());
-        else if (v.getId() == R.id.button_stop) mainViewModel.stopCounter();
+        if (v.getId() == R.id.button_start) {
+            mainViewModel.runCounter(getContext());
+            changeButtonsState(Pair.create(View.GONE, View.VISIBLE));
+        }
+        else if (v.getId() == R.id.button_stop) {
+            mainViewModel.stopCounter();
+            changeButtonsState(Pair.create(View.VISIBLE, View.GONE));
+        }
+    }
+
+    private void changeButtonsState(Pair<Integer, Integer> stateButton){
+        start.setVisibility(stateButton.first);
+        progressBar.setVisibility(stateButton.second);
+        counterPanel.setVisibility(stateButton.second);
+        counterPanel.setText("");
+        stop.setVisibility(stateButton.second);
     }
 
     private void showCounter(String number){
@@ -119,10 +137,9 @@ public class MainFragment extends Fragment implements
     @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-        mMap = googleMap;
-        mMap.setOnMyLocationClickListener(this);
-        mMap.setMyLocationEnabled(true);
-        mMap.setOnMyLocationButtonClickListener(this);
+        googleMap.setOnMyLocationClickListener(this);
+        googleMap.setMyLocationEnabled(true);
+        googleMap.setOnMyLocationButtonClickListener(this);
     }
 
     @Override

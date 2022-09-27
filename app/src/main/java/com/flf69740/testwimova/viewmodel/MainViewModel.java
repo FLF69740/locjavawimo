@@ -35,6 +35,8 @@ public class MainViewModel extends ViewModel {
 
     private final CompositeDisposable disposables = new CompositeDisposable();
 
+    private Long decimalDecrement = 0L;
+
     @Inject
     MainViewModel(
         SchedulersFacade schedulersFacade,
@@ -62,8 +64,11 @@ public class MainViewModel extends ViewModel {
 
             @Override
             public void onNext(Long aLong) {
-                if (aLong % 10 == 0) runMapPositions(context);
-                counter.postValue(String.valueOf(aLong));
+                if (aLong % 10 == 0) {
+                    decimalDecrement += 10;
+                    runMapPositions(context);
+                }
+                counter.postValue(String.valueOf(Math.abs(aLong - decimalDecrement)));
             }
 
             @Override
