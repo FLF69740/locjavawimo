@@ -25,9 +25,12 @@ import com.flf69740.testwimova.rx.Response;
 import com.flf69740.testwimova.ui.recyclerview.ListPositionsAdapter;
 import com.flf69740.testwimova.utils.DateUtils;
 import com.flf69740.testwimova.viewmodel.MainViewModel;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +56,10 @@ public class MainFragment extends Fragment implements
     private Button start;
     private Button stop;
     private ListPositionsAdapter recyclerAdapter;
+    private RecyclerView recyclerView;
+
+    private boolean firstTimeForZoom = true;
+    private GoogleMap mMap;
 
     public static MainFragment newInstance() {
         return new MainFragment();
@@ -81,7 +88,7 @@ public class MainFragment extends Fragment implements
 
         counterPanel = view.findViewById(R.id.counter_indicator);
 
-        RecyclerView recyclerView = view.findViewById(R.id.main_recyclerview);
+        recyclerView = view.findViewById(R.id.main_recyclerview);
         recyclerAdapter = new ListPositionsAdapter();
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -145,6 +152,12 @@ public class MainFragment extends Fragment implements
 
     private void renderDataState(@Nullable MapPositions response){
         if (response != null) {
+            if (firstTimeForZoom){
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(response.getLatitude(), response.getLongitude())));
+                mMap.setMinZoomPreference(15.0f);
+                firstTimeForZoom = false;
+            }
+            recyclerView.scrollToPosition(0);
             recyclerAdapter.addAPosition(response);
             recyclerAdapter.notifyItemInserted(0);
         }
@@ -190,6 +203,7 @@ public class MainFragment extends Fragment implements
     @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
         googleMap.setOnMyLocationClickListener(this);
         googleMap.setMyLocationEnabled(true);
         googleMap.setOnMyLocationButtonClickListener(this);
