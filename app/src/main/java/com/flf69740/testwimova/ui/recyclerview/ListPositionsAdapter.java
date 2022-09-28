@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.flf69740.testwimova.R;
 import com.flf69740.testwimova.modele.MapPositions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListPositionsAdapter extends RecyclerView.Adapter<ListPositionsHolder> {
@@ -45,6 +46,13 @@ public class ListPositionsAdapter extends RecyclerView.Adapter<ListPositionsHold
     }
 
     public void addAPosition(MapPositions position){
+        if (mapPositions == null) {
+            mapPositions = new ArrayList<>();
+        }
         mapPositions.add(0, position);
+    }
+
+    public void clearAllPositions(){
+        mapPositions.clear();
     }
 }

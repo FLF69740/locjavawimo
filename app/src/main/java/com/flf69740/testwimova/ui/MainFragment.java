@@ -55,6 +55,7 @@ public class MainFragment extends Fragment implements
     private ProgressBar progressBar;
     private Button start;
     private Button stop;
+    private Button delete;
     private ListPositionsAdapter recyclerAdapter;
     private RecyclerView recyclerView;
 
@@ -86,6 +87,9 @@ public class MainFragment extends Fragment implements
         stop = view.findViewById(R.id.button_stop);
         stop.setOnClickListener(this);
 
+        delete = view.findViewById(R.id.button_delete);
+        delete.setOnClickListener(this);
+
         counterPanel = view.findViewById(R.id.counter_indicator);
 
         recyclerView = view.findViewById(R.id.main_recyclerview);
@@ -116,6 +120,10 @@ public class MainFragment extends Fragment implements
         else if (v.getId() == R.id.button_stop) {
             mainViewModel.stopCounter();
             changeButtonsState(Pair.create(View.VISIBLE, View.GONE));
+        }
+        else if (v.getId() == R.id.button_delete) {
+            recyclerAdapter.clearAllPositions();
+            recyclerAdapter.notifyDataSetChanged();
         }
     }
 
