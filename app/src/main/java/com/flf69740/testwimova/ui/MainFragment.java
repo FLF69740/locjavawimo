@@ -109,6 +109,7 @@ public class MainFragment extends Fragment implements
     public void onResume() {
         super.onResume();
         mainViewModel.runDatabasePositionLoading();
+        mainViewModel.runCounter(getContext(), new DateUtils().getDateToString());
     }
 
     @Override
@@ -122,6 +123,7 @@ public class MainFragment extends Fragment implements
             changeButtonsState(Pair.create(View.VISIBLE, View.GONE));
         }
         else if (v.getId() == R.id.button_delete) {
+            delete.setVisibility(View.GONE);
             recyclerAdapter.clearAllPositions();
             recyclerAdapter.notifyDataSetChanged();
         }
@@ -165,6 +167,9 @@ public class MainFragment extends Fragment implements
                 mMap.setMinZoomPreference(15.0f);
                 firstTimeForZoom = false;
             }
+            if (delete.getVisibility() != View.VISIBLE) {
+                delete.setVisibility(View.VISIBLE);
+            }
             recyclerView.scrollToPosition(0);
             recyclerAdapter.addAPosition(response);
             recyclerAdapter.notifyItemInserted(0);
@@ -196,6 +201,7 @@ public class MainFragment extends Fragment implements
 
     private void renderRoomDataState(@Nullable List<MapPositions> listResponse) {
         if (listResponse != null && !listResponse.isEmpty()) {
+            delete.setVisibility(View.VISIBLE);
             recyclerAdapter.AddAllPositions(listResponse);
             recyclerAdapter.notifyDataSetChanged();
         }
