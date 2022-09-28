@@ -10,6 +10,6 @@ public class DateUtils {
     }
 
     public String getDateToString() {
-        return new SimpleDateFormat("MM/dd/yyyy", Locale.FRANCE).format(Calendar.getInstance().getTime());
+        return new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(Calendar.getInstance().getTime());
     }
 }

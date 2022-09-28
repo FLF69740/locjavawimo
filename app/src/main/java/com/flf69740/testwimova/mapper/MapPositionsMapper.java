@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapPositionsMapper {
-    public MapPositions toMapPositions(BusinessMapPosition businessMapPosition){
+    public MapPositions toMapPositions(BusinessMapPosition businessMapPosition, String date){
         return new  MapPositions(
-                null,
+                date,
                 businessMapPosition.getLatitude(),
                 businessMapPosition.getLongitude()
         );
@@ -19,8 +19,8 @@ public class MapPositionsMapper {
     public List<MapPositions> savedToMapPositions(List<BusinessSavedPosition> list){
         ArrayList<MapPositions> result = new ArrayList<>();
 
-        for (int i = list.size() -1; i > -1; i--){
-            result.add(toMapPosition(list.get(i)));
+        for (BusinessSavedPosition position : list){
+            result.add(toMapPosition(position));
         }
 
         return result;

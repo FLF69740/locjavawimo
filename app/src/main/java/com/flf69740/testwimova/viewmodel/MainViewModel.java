@@ -106,7 +106,7 @@ public class MainViewModel extends ViewModel {
                 .subscribe(
                         mapPosition -> response.postValue(Response.success(
                                 new MapPositionsMapper()
-                                        .toMapPositions(mapPosition))
+                                        .toMapPositions(mapPosition, date))
                         ),
                         throwable -> response.postValue(Response.error(throwable))
                 );

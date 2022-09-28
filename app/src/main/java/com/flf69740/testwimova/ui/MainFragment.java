@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -20,12 +22,14 @@ import com.flf69740.testwimova.R;
 import com.flf69740.testwimova.modele.MapPositions;
 import com.flf69740.testwimova.rx.ListResponse;
 import com.flf69740.testwimova.rx.Response;
+import com.flf69740.testwimova.ui.recyclerview.ListPositionsAdapter;
 import com.flf69740.testwimova.utils.DateUtils;
 import com.flf69740.testwimova.viewmodel.MainViewModel;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -48,6 +52,7 @@ public class MainFragment extends Fragment implements
     private ProgressBar progressBar;
     private Button start;
     private Button stop;
+    private ListPositionsAdapter recyclerAdapter;
 
     public static MainFragment newInstance() {
         return new MainFragment();
@@ -75,6 +80,11 @@ public class MainFragment extends Fragment implements
         stop.setOnClickListener(this);
 
         counterPanel = view.findViewById(R.id.counter_indicator);
+
+        RecyclerView recyclerView = view.findViewById(R.id.main_recyclerview);
+        recyclerAdapter = new ListPositionsAdapter();
+        recyclerView.setAdapter(recyclerAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null){
@@ -135,7 +145,8 @@ public class MainFragment extends Fragment implements
 
     private void renderDataState(@Nullable MapPositions response){
         if (response != null) {
-            Toast.makeText(getContext(), response.getLatitude() + " - " + response.getLongitude(), Toast.LENGTH_SHORT).show();
+            recyclerAdapter.addAPosition(response);
+            recyclerAdapter.notifyItemInserted(0);
         }
     }
 
@@ -164,8 +175,8 @@ public class MainFragment extends Fragment implements
 
     private void renderRoomDataState(@Nullable List<MapPositions> listResponse) {
         if (listResponse != null && !listResponse.isEmpty()) {
-            Toast.makeText(getContext(), "ligne " + listResponse.size() + " \n" +
-                    listResponse.get(0).getDate() + " - " + listResponse.get(0).getLatitude() + "-" + listResponse.get(0).getLongitude(), Toast.LENGTH_LONG).show();
+            recyclerAdapter.AddAllPositions(listResponse);
+            recyclerAdapter.notifyDataSetChanged();
         }
     }
 
